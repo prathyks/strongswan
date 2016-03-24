@@ -218,7 +218,7 @@ static job_requeue_t add_exclude_async(entry_t *entry)
 
 		child_cfg = child_cfg_create(name, &lft, NULL, TRUE, MODE_PASS,
 									 ACTION_NONE, ACTION_NONE, ACTION_NONE,
-									 FALSE, 0, 0, NULL, NULL, FALSE);
+									 FALSE, 0, 0, NULL, NULL, FALSE, 0);
 		child_cfg->add_traffic_selector(child_cfg, FALSE,
 										entry->ts->clone(entry->ts));
 		host = ike_sa->get_my_host(ike_sa);

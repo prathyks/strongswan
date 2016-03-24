@@ -3,7 +3,8 @@
  * Copyright (C) 2006 Daniel Roethlisberger
  * Copyright (C) 2005-2006 Martin Willi
  * Copyright (C) 2005 Jan Hutter
- * Hochschule fuer Technik Rapperswil
+ * Copyright (C) 2016 Andreas Steffen
+ * HSR Hochschule fuer Technik Rapperswil
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -195,6 +196,7 @@ struct kernel_ipsec_t {
 	 * @param sa			details about the SA(s) tied to this policy
 	 * @param mark			mark for this policy
 	 * @param priority		priority of this policy
+	 * @param manual_prio	manually-set priority (automatic if set to 0)
 	 * @return				SUCCESS if operation completed
 	 */
 	status_t (*add_policy) (kernel_ipsec_t *this,
@@ -203,7 +205,7 @@ struct kernel_ipsec_t {
 							traffic_selector_t *dst_ts,
 							policy_dir_t direction, policy_type_t type,
 							ipsec_sa_cfg_t *sa, mark_t mark,
-							policy_priority_t priority);
+							policy_priority_t priority, uint32_t manual_prio);
 
 	/**
 	 * Query the use time of a policy.
@@ -237,6 +239,7 @@ struct kernel_ipsec_t {
 	 * @param sa			details about the SA(s) tied to this policy
 	 * @param mark			mark for this policy
 	 * @param priority		priority of the policy
+	 * @param manual_prio	manually-set priority (automatic if set to 0)
 	 * @return				SUCCESS if operation completed
 	 */
 	status_t (*del_policy) (kernel_ipsec_t *this,
@@ -245,7 +248,7 @@ struct kernel_ipsec_t {
 							traffic_selector_t *dst_ts,
 							policy_dir_t direction, policy_type_t type,
 							ipsec_sa_cfg_t *sa, mark_t mark,
-							policy_priority_t priority);
+							policy_priority_t priority, uint32_t manual_prio);
 
 	/**
 	 * Flush all policies from the SPD.

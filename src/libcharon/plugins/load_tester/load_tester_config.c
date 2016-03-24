@@ -778,7 +778,7 @@ static peer_cfg_t* generate_config(private_load_tester_config_t *this, uint num)
 
 	child_cfg = child_cfg_create("load-test", &lifetime, NULL, TRUE, mode,
 								 ACTION_NONE, ACTION_NONE, ACTION_NONE, FALSE,
-								 0, 0, NULL, NULL, 0);
+								 0, 0, NULL, NULL, 0, 0);
 	child_cfg->add_proposal(child_cfg, this->esp->clone(this->esp));
 
 	if (num)

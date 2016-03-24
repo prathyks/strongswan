@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2015 Tobias Brunner
- * Copyright (C) 2011 Andreas Steffen
+ * Copyright (C) 2011-2016 Andreas Steffen
  * HSR Hochschule fuer Technik Rapperswil
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -114,21 +114,21 @@ static bool install_shunt_policy(child_cfg_t *child)
 								host_any, host_any,
 								my_ts, other_ts, POLICY_OUT, policy_type,
 								&sa, child->get_mark(child, FALSE),
-								policy_prio);
+								policy_prio, child->get_manual_prio(child));
 
 			/* install in policy */
 			status |= charon->kernel->add_policy(charon->kernel,
 								host_any, host_any,
 								other_ts, my_ts, POLICY_IN, policy_type,
 								&sa, child->get_mark(child, TRUE),
-								policy_prio);
+								policy_prio, child->get_manual_prio(child));
 
 			/* install forward policy */
 			status |= charon->kernel->add_policy(charon->kernel,
 								host_any, host_any,
 								other_ts, my_ts, POLICY_FWD, policy_type,
 								&sa, child->get_mark(child, TRUE),
-								policy_prio);
+								policy_prio, child->get_manual_prio(child));
 		}
 		e_other_ts->destroy(e_other_ts);
 	}
@@ -251,21 +251,21 @@ static void uninstall_shunt_policy(child_cfg_t *child)
 							host_any, host_any,
 							my_ts, other_ts, POLICY_OUT, policy_type,
 							&sa, child->get_mark(child, FALSE),
-							policy_prio);
+							policy_prio, child->get_manual_prio(child));
 
 			/* uninstall in policy */
 			status |= charon->kernel->del_policy(charon->kernel,
 							host_any, host_any,
 							other_ts, my_ts, POLICY_IN, policy_type,
 							&sa, child->get_mark(child, TRUE),
-							policy_prio);
+							policy_prio, child->get_manual_prio(child));
 
 			/* uninstall forward policy */
 			status |= charon->kernel->del_policy(charon->kernel,
 							host_any, host_any,
 							other_ts, my_ts, POLICY_FWD, policy_type,
 							&sa, child->get_mark(child, TRUE),
-							policy_prio);
+							policy_prio, child->get_manual_prio(child));
 		}
 		e_other_ts->destroy(e_other_ts);
 	}

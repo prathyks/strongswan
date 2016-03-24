@@ -181,7 +181,7 @@ METHOD(enumerator_t, peer_enumerator_enumerate, bool,
 
 		child_cfg = child_cfg_create(name, &lifetime, NULL, TRUE, MODE_TUNNEL,
 									 ACTION_NONE, ACTION_NONE, ACTION_NONE,
-									 FALSE, 0, 0, NULL, NULL, 0);
+									 FALSE, 0, 0, NULL, NULL, 0, 0);
 		child_cfg->add_proposal(child_cfg, create_proposal(esp_proposal, PROTO_ESP));
 		child_cfg->add_traffic_selector(child_cfg, TRUE, create_ts(local_net));
 		child_cfg->add_traffic_selector(child_cfg, FALSE, create_ts(remote_net));

@@ -2,7 +2,8 @@
  * Copyright (C) 2008-2015 Tobias Brunner
  * Copyright (C) 2005-2007 Martin Willi
  * Copyright (C) 2005 Jan Hutter
- * Hochschule fuer Technik Rapperswil
+ * Copyright (C) 2016 Andreas Steffen
+ * HSR Hochschule fuer Technik Rapperswil
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -131,6 +132,11 @@ struct private_child_cfg_t {
 	 * Traffic Flow Confidentiality padding, if enabled
 	 */
 	uint32_t tfc;
+
+	/**
+	 * Optional manually-set IPsec policy priorities
+	 */
+	uint32_t manual_prio;
 
 	/**
 	 * set up IPsec transport SA in MIPv6 proxy mode
@@ -500,6 +506,12 @@ METHOD(child_cfg_t, get_tfc, uint32_t,
 	return this->tfc;
 }
 
+METHOD(child_cfg_t, get_manual_prio, uint32_t,
+	private_child_cfg_t *this)
+{
+	return this->manual_prio;
+}
+
 METHOD(child_cfg_t, get_replay_window, uint32_t,
 	private_child_cfg_t *this)
 {
@@ -576,6 +588,7 @@ METHOD(child_cfg_t, equals, bool,
 		this->mark_out.value == other->mark_out.value &&
 		this->mark_out.mask == other->mark_out.mask &&
 		this->tfc == other->tfc &&
+		this->manual_prio == other->manual_prio &&
 		this->replay_window == other->replay_window &&
 		this->proxy_mode == other->proxy_mode &&
 		this->install_policy == other->install_policy &&
@@ -614,7 +627,8 @@ child_cfg_t *child_cfg_create(char *name, lifetime_cfg_t *lifetime,
 							  ipsec_mode_t mode, action_t start_action,
 							  action_t dpd_action, action_t close_action,
 							  bool ipcomp, uint32_t inactivity, uint32_t reqid,
-							  mark_t *mark_in, mark_t *mark_out, uint32_t tfc)
+							  mark_t *mark_in, mark_t *mark_out, uint32_t tfc,
+							  uint32_t manual_prio)
 {
 	private_child_cfg_t *this;
 
@@ -640,6 +654,7 @@ child_cfg_t *child_cfg_create(char *name, lifetime_cfg_t *lifetime,
 			.get_reqid = _get_reqid,
 			.get_mark = _get_mark,
 			.get_tfc = _get_tfc,
+			.get_manual_prio = _get_manual_prio,
 			.get_replay_window = _get_replay_window,
 			.set_replay_window = _set_replay_window,
 			.use_proxy_mode = _use_proxy_mode,
@@ -665,6 +680,7 @@ child_cfg_t *child_cfg_create(char *name, lifetime_cfg_t *lifetime,
 		.my_ts = linked_list_create(),
 		.other_ts = linked_list_create(),
 		.tfc = tfc,
+		.manual_prio = manual_prio,
 		.replay_window = lib->settings->get_int(lib->settings,
 				"%s.replay_window", DEFAULT_REPLAY_WINDOW, lib->ns),
 	);

@@ -2,7 +2,8 @@
  * Copyright (C) 2008-2015 Tobias Brunner
  * Copyright (C) 2005-2007 Martin Willi
  * Copyright (C) 2005 Jan Hutter
- * Hochschule fuer Technik Rapperswil
+ * Copyright (C) 2016 Andreas Steffen
+ * HSR Hochschule fuer Technik Rapperswil
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -235,6 +236,13 @@ struct child_cfg_t {
 	uint32_t (*get_tfc)(child_cfg_t *this);
 
 	/**
+	 * Get optional manually-set IPsec policy priority
+	 *
+	 * @return				manually-set IPsec policy priority (automatic if 0)
+	 */
+	uint32_t (*get_manual_prio)(child_cfg_t *this);
+
+	/**
 	 * Get anti-replay window size
 	 *
 	 * @return				anti-replay window size
@@ -322,6 +330,7 @@ struct child_cfg_t {
  * @param mark_in			optional inbound mark (can be NULL)
  * @param mark_out			optional outbound mark (can be NULL)
  * @param tfc				TFC padding size, 0 to disable, -1 to pad to PMTU
+ * @param manual_prio		optional manually-set IPsec policiy priority
  * @return					child_cfg_t object
  */
 child_cfg_t *child_cfg_create(char *name, lifetime_cfg_t *lifetime,
@@ -329,6 +338,7 @@ child_cfg_t *child_cfg_create(char *name, lifetime_cfg_t *lifetime,
 							  ipsec_mode_t mode, action_t start_action,
 							  action_t dpd_action, action_t close_action,
 							  bool ipcomp, uint32_t inactivity, uint32_t reqid,
-							  mark_t *mark_in, mark_t *mark_out, uint32_t tfc);
+							  mark_t *mark_in, mark_t *mark_out, uint32_t tfc,
+							  uint32_t manual_prio);
 
 #endif /** CHILD_CFG_H_ @}*/

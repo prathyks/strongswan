@@ -5,7 +5,7 @@
  * Copyright (C) 2006-2007 Fabian Hartmann, Noah Heusser
  * Copyright (C) 2006 Daniel Roethlisberger
  * Copyright (C) 2005 Jan Hutter
- * Hochschule fuer Technik Rapperswil
+ * HSR Hochschule fuer Technik Rapperswil
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -607,7 +607,7 @@ static bool policy_equals(policy_entry_t *key, policy_entry_t *other_key)
  * Calculate the priority of a policy
  */
 static inline uint32_t get_priority(policy_entry_t *policy,
-									 policy_priority_t prio)
+									policy_priority_t prio)
 {
 	uint32_t priority = PRIO_BASE;
 	switch (prio)
@@ -2306,7 +2306,7 @@ METHOD(kernel_ipsec_t, add_policy, status_t,
 	private_kernel_netlink_ipsec_t *this, host_t *src, host_t *dst,
 	traffic_selector_t *src_ts, traffic_selector_t *dst_ts,
 	policy_dir_t direction, policy_type_t type, ipsec_sa_cfg_t *sa,
-	mark_t mark, policy_priority_t priority)
+	mark_t mark, policy_priority_t priority, uint32_t manual_prio)
 {
 	policy_entry_t *policy, *current;
 	policy_sa_t *assigned_sa, *current_sa;
@@ -2354,7 +2354,8 @@ METHOD(kernel_ipsec_t, add_policy, status_t,
 	/* cache the assigned IPsec SA */
 	assigned_sa = policy_sa_create(this, direction, type, src, dst, src_ts,
 								   dst_ts, mark, sa);
-	assigned_sa->priority = get_priority(policy, priority);
+	assigned_sa->priority = manual_prio ? manual_prio :
+										  get_priority(policy, priority);
 
 	/* insert the SA according to its priority */
 	enumerator = policy->used_by->create_enumerator(policy->used_by);
@@ -2482,7 +2483,7 @@ METHOD(kernel_ipsec_t, del_policy, status_t,
 	private_kernel_netlink_ipsec_t *this, host_t *src, host_t *dst,
 	traffic_selector_t *src_ts, traffic_selector_t *dst_ts,
 	policy_dir_t direction, policy_type_t type, ipsec_sa_cfg_t *sa,
-	mark_t mark, policy_priority_t prio)
+	mark_t mark, policy_priority_t prio, uint32_t manual_prio)
 {
 	policy_entry_t *current, policy;
 	enumerator_t *enumerator;
@@ -2530,7 +2531,8 @@ METHOD(kernel_ipsec_t, del_policy, status_t,
 	}
 
 	/* remove mapping to SA by reqid and priority */
-	priority = get_priority(current, prio);
+	priority = manual_prio ? manual_prio :
+							 get_priority(current, prio);
 	enumerator = current->used_by->create_enumerator(current->used_by);
 	while (enumerator->enumerate(enumerator, (void**)&mapping))
 	{

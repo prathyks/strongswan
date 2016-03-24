@@ -167,7 +167,7 @@ METHOD(backend_t, get_peer_cfg_by_name, peer_cfg_t*,
 
 	child_cfg = child_cfg_create(name, &lifetime, NULL, TRUE, MODE_TUNNEL,
 								 ACTION_NONE, ACTION_NONE, ACTION_NONE, FALSE,
-								 0, 0, NULL, NULL, 0);
+								 0, 0, NULL, NULL, 0, 0);
 	child_cfg->add_proposal(child_cfg, proposal_create_default(PROTO_ESP));
 	child_cfg->add_proposal(child_cfg, proposal_create_default_aead(PROTO_ESP));
 	child_cfg->add_traffic_selector(child_cfg, TRUE, ts_from_string(local_net));
@@ -242,7 +242,7 @@ METHOD(enumerator_t, peer_enumerator_enumerate, bool,
 
 	child_cfg = child_cfg_create(name, &lifetime, NULL, TRUE, MODE_TUNNEL,
 								 ACTION_NONE, ACTION_NONE, ACTION_NONE, FALSE,
-								 0, 0, NULL, NULL, 0);
+								 0, 0, NULL, NULL, 0, 0);
 	child_cfg->add_proposal(child_cfg, proposal_create_default(PROTO_ESP));
 	child_cfg->add_proposal(child_cfg, proposal_create_default_aead(PROTO_ESP));
 	child_cfg->add_traffic_selector(child_cfg, TRUE, ts_from_string(local_net));

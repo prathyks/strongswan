@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2012-2013 Tobias Brunner
- * Hochschule fuer Technik Rapperswil
+ * Copyright (C) 2016
+ * HSR Hochschule fuer Technik Rapperswil
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -512,13 +513,14 @@ METHOD(kernel_ipsec_t, add_policy, status_t,
 	private_kernel_libipsec_ipsec_t *this, host_t *src, host_t *dst,
 	traffic_selector_t *src_ts, traffic_selector_t *dst_ts,
 	policy_dir_t direction, policy_type_t type, ipsec_sa_cfg_t *sa, mark_t mark,
-	policy_priority_t priority)
+	policy_priority_t priority, uint32_t manual_prio)
 {
 	policy_entry_t *policy, *found = NULL;
 	status_t status;
 
 	status = ipsec->policies->add_policy(ipsec->policies, src, dst, src_ts,
-								dst_ts, direction, type, sa, mark, priority);
+										 dst_ts, direction, type, sa, mark,
+										 priority);
 	if (status != SUCCESS)
 	{
 		return status;
@@ -559,13 +561,14 @@ METHOD(kernel_ipsec_t, del_policy, status_t,
 	private_kernel_libipsec_ipsec_t *this, host_t *src, host_t *dst,
 	traffic_selector_t *src_ts, traffic_selector_t *dst_ts,
 	policy_dir_t direction, policy_type_t type, ipsec_sa_cfg_t *sa,
-	mark_t mark, policy_priority_t priority)
+	mark_t mark, policy_priority_t priority, uint32_t manual_prio)
 {
 	policy_entry_t *policy, *found = NULL;
 	status_t status;
 
 	status = ipsec->policies->del_policy(ipsec->policies, src, dst, src_ts,
-								dst_ts, direction, type, sa, mark, priority);
+										 dst_ts, direction, type, sa, mark,
+										 priority);
 
 	policy = create_policy_entry(src_ts, dst_ts, direction);
 

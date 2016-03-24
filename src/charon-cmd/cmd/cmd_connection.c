@@ -346,7 +346,7 @@ static child_cfg_t* create_child_cfg(private_cmd_connection_t *this,
 	child_cfg = child_cfg_create("cmd", &lifetime,
 								 NULL, FALSE, MODE_TUNNEL, /* updown, hostaccess */
 								 ACTION_NONE, ACTION_NONE, ACTION_NONE, FALSE,
-								 0, 0, NULL, NULL, 0);
+								 0, 0, NULL, NULL, 0, 0);
 	if (this->child_proposals->get_count(this->child_proposals))
 	{
 		while (this->child_proposals->remove_first(this->child_proposals,
