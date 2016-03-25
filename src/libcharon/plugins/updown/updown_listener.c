@@ -265,7 +265,13 @@ static void invoke_once(private_updown_listener_t *this, ike_sa_t *ike_sa,
 	process_t *process;
 	char port_buf[PORT_BUF_LEN];
 	char *envp[128] = {};
+	char *updown;
 
+	updown = config->get_updown(config);
+	if (updown == NULL)
+	{
+		return;
+	}
 	me = ike_sa->get_my_host(ike_sa);
 	other = ike_sa->get_other_host(ike_sa);
 
@@ -371,8 +377,7 @@ static void invoke_once(private_updown_listener_t *this, ike_sa_t *ike_sa,
 		push_env(envp, countof(envp), "PLUTO_HOST_ACCESS=1");
 	}
 
-	process = process_start_shell(envp, NULL, &out, NULL, "2>&1 %s",
-								  config->get_updown(config));
+	process = process_start_shell(envp, NULL, &out, NULL, "2>&1 %s", updown);
 	if (process)
 	{
 		shell = fdopen(out, "r");

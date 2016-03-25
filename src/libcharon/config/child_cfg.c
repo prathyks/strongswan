@@ -544,7 +544,8 @@ METHOD(child_cfg_t, install_policy, bool,
 }
 
 #define LT_PART_EQUALS(a, b) ({ a.life == b.life && a.rekey == b.rekey && a.jitter == b.jitter; })
-#define LIFETIME_EQUALS(a, b) ({  LT_PART_EQUALS(a.time, b.time) && LT_PART_EQUALS(a.bytes, b.bytes) && LT_PART_EQUALS(a.packets, b.packets); })
+#define LIFETIME_EQUALS(a, b) ({ LT_PART_EQUALS(a.time, b.time) && LT_PART_EQUALS(a.bytes, b.bytes) && LT_PART_EQUALS(a.packets, b.packets); })
+#define UPDOWN_EQUALS(a,b) ({ (!a && !b) || (a && b && streq(a, b)); })
 
 METHOD(child_cfg_t, equals, bool,
 	private_child_cfg_t *this, child_cfg_t *other_pub)
@@ -592,7 +593,7 @@ METHOD(child_cfg_t, equals, bool,
 		this->replay_window == other->replay_window &&
 		this->proxy_mode == other->proxy_mode &&
 		this->install_policy == other->install_policy &&
-		streq(this->updown, other->updown);
+		UPDOWN_EQUALS(this->updown, other->updown);
 }
 
 METHOD(child_cfg_t, get_ref, child_cfg_t*,
