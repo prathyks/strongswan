@@ -829,22 +829,24 @@ static status_t install_policies_internal(private_child_sa_t *this,
 	ipsec_sa_cfg_t *other_sa, policy_type_t type,
 	policy_priority_t priority,	uint32_t manual_prio)
 {
+	char *interface = this->config->get_interface(this->config);
+
 	status_t status = SUCCESS;
 	status |= charon->kernel->add_policy(charon->kernel,
 							my_addr, other_addr, my_ts, other_ts,
 							POLICY_OUT, type, other_sa,
-							this->mark_out, priority, manual_prio);
+							this->mark_out, priority, manual_prio, interface);
 
 	status |= charon->kernel->add_policy(charon->kernel,
 							other_addr, my_addr, other_ts, my_ts,
 							POLICY_IN, type, my_sa,
-							this->mark_in, priority, manual_prio);
+							this->mark_in, priority, manual_prio, interface);
 	if (this->mode != MODE_TRANSPORT)
 	{
 		status |= charon->kernel->add_policy(charon->kernel,
 							other_addr, my_addr, other_ts, my_ts,
 							POLICY_FWD, type, my_sa,
-							this->mark_in, priority, manual_prio);
+							this->mark_in, priority, manual_prio, interface);
 	}
 	return status;
 }
@@ -858,17 +860,22 @@ static void del_policies_internal(private_child_sa_t *this,
 	ipsec_sa_cfg_t *other_sa, policy_type_t type,
 	policy_priority_t priority, uint32_t manual_prio)
 {
+	char *interface = this->config->get_interface(this->config);
+
 	charon->kernel->del_policy(charon->kernel,
-						my_addr, other_addr, my_ts, other_ts, POLICY_OUT, type,
-						other_sa, this->mark_out, priority, manual_prio);
+							my_addr, other_addr, my_ts, other_ts,
+							POLICY_OUT, type, other_sa,
+							this->mark_out, priority, manual_prio, interface);
 	charon->kernel->del_policy(charon->kernel,
-						other_addr, my_addr, other_ts, my_ts, POLICY_IN,
-						type, my_sa, this->mark_in, priority, manual_prio);
+							other_addr, my_addr, other_ts, my_ts,
+							POLICY_IN, type, my_sa,
+							this->mark_in, priority, manual_prio, interface);
 	if (this->mode != MODE_TRANSPORT)
 	{
 		charon->kernel->del_policy(charon->kernel,
-						other_addr, my_addr, other_ts, my_ts, POLICY_FWD,
-						type, my_sa, this->mark_in, priority, manual_prio);
+							other_addr, my_addr, other_ts, my_ts,
+							POLICY_FWD, type, my_sa,
+							this->mark_in, priority, manual_prio, interface);
 	}
 }
 

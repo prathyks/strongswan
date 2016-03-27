@@ -26,6 +26,7 @@
 #include <linux/rtnetlink.h>
 #include <linux/xfrm.h>
 #include <linux/udp.h>
+#include <net/if.h>
 #include <unistd.h>
 #include <time.h>
 #include <errno.h>
@@ -739,7 +740,8 @@ static void ts2ports(traffic_selector_t* ts,
  * Convert a pair of traffic_selectors to an xfrm_selector
  */
 static struct xfrm_selector ts2selector(traffic_selector_t *src,
-										traffic_selector_t *dst)
+										traffic_selector_t *dst,
+										char *interface)
 {
 	struct xfrm_selector sel;
 	uint16_t port;
@@ -763,7 +765,7 @@ static struct xfrm_selector ts2selector(traffic_selector_t *src,
 		sel.dport = htons(traffic_selector_icmp_code(port));
 		sel.dport_mask = sel.dport ? ~0 : 0;
 	}
-	sel.ifindex = 0;
+	sel.ifindex = interface ? if_nametoindex(interface) : 0;
 	sel.user = 0;
 
 	return sel;
@@ -1263,7 +1265,7 @@ METHOD(kernel_ipsec_t, add_sa, status_t,
 			if (src_ts->get_first(src_ts, (void**)&first_src_ts) == SUCCESS &&
 				dst_ts->get_first(dst_ts, (void**)&first_dst_ts) == SUCCESS)
 			{
-				sa->sel = ts2selector(first_src_ts, first_dst_ts);
+				sa->sel = ts2selector(first_src_ts, first_dst_ts, NULL);
 				if (!this->proto_port_transport)
 				{
 					/* don't install proto/port on SA. This would break
@@ -2306,7 +2308,8 @@ METHOD(kernel_ipsec_t, add_policy, status_t,
 	private_kernel_netlink_ipsec_t *this, host_t *src, host_t *dst,
 	traffic_selector_t *src_ts, traffic_selector_t *dst_ts,
 	policy_dir_t direction, policy_type_t type, ipsec_sa_cfg_t *sa,
-	mark_t mark, policy_priority_t priority, uint32_t manual_prio)
+	mark_t mark, policy_priority_t priority, uint32_t manual_prio,
+	char *interface)
 {
 	policy_entry_t *policy, *current;
 	policy_sa_t *assigned_sa, *current_sa;
@@ -2315,7 +2318,7 @@ METHOD(kernel_ipsec_t, add_policy, status_t,
 
 	/* create a policy */
 	INIT(policy,
-		.sel = ts2selector(src_ts, dst_ts),
+		.sel = ts2selector(src_ts, dst_ts, interface),
 		.mark = mark.value & mark.mask,
 		.direction = direction,
 		.reqid = sa->reqid,
@@ -2420,7 +2423,7 @@ METHOD(kernel_ipsec_t, query_policy, status_t,
 	hdr->nlmsg_len = NLMSG_LENGTH(sizeof(struct xfrm_userpolicy_id));
 
 	policy_id = NLMSG_DATA(hdr);
-	policy_id->sel = ts2selector(src_ts, dst_ts);
+	policy_id->sel = ts2selector(src_ts, dst_ts, NULL);
 	policy_id->dir = direction;
 
 	if (!add_mark(hdr, sizeof(request), mark))
@@ -2483,7 +2486,7 @@ METHOD(kernel_ipsec_t, del_policy, status_t,
 	private_kernel_netlink_ipsec_t *this, host_t *src, host_t *dst,
 	traffic_selector_t *src_ts, traffic_selector_t *dst_ts,
 	policy_dir_t direction, policy_type_t type, ipsec_sa_cfg_t *sa,
-	mark_t mark, policy_priority_t prio, uint32_t manual_prio)
+	mark_t mark, policy_priority_t prio, uint32_t manual_prio, char *interface)
 {
 	policy_entry_t *current, policy;
 	enumerator_t *enumerator;
@@ -2506,7 +2509,7 @@ METHOD(kernel_ipsec_t, del_policy, status_t,
 
 	/* create a policy */
 	memset(&policy, 0, sizeof(policy_entry_t));
-	policy.sel = ts2selector(src_ts, dst_ts);
+	policy.sel = ts2selector(src_ts, dst_ts, interface);
 	policy.mark = mark.value & mark.mask;
 	policy.direction = direction;
 

@@ -435,6 +435,7 @@ typedef struct {
 	uint32_t reqid;
 	uint32_t tfc;
 	uint32_t priority;
+	char *interface;
 	mark_t mark_in;
 	mark_t mark_out;
 	uint64_t inactivity;
@@ -473,6 +474,7 @@ static void log_child_data(child_data_t *data, char *name)
 	DBG2(DBG_CFG, "   reqid = %u", data->reqid);
 	DBG2(DBG_CFG, "   tfc = %d", data->tfc);
 	DBG2(DBG_CFG, "   priority = %d", data->priority);
+	DBG2(DBG_CFG, "   interface = %s", data->interface);
 	DBG2(DBG_CFG, "   mark_in = %u/%u",
 		 data->mark_in.value, data->mark_in.mask);
 	DBG2(DBG_CFG, "   mark_out = %u/%u",
@@ -1353,6 +1355,7 @@ CALLBACK(child_kv, bool,
 		{ "mark_out",		parse_mark,			&child->mark_out			},
 		{ "tfc_padding",	parse_tfc,			&child->tfc					},
 		{ "priority",		parse_uint32,		&child->priority			},
+		{ "interface",		parse_string,		&child->interface			},
 	};
 
 	return parse_rules(rules, countof(rules), name, value,
@@ -1546,8 +1549,8 @@ CALLBACK(children_sn, bool,
 						child.dpd_action, child.close_action, child.ipcomp,
 						child.inactivity, child.reqid, &child.mark_in,
 						&child.mark_out, child.tfc, child.priority);
-
 	cfg->set_mipv6_options(cfg, FALSE, child.policies);
+	cfg->set_interface(cfg, child.interface);
 
 	if (child.replay_window != REPLAY_UNDEFINED)
 	{

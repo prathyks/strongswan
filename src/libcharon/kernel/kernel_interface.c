@@ -484,14 +484,15 @@ METHOD(kernel_interface_t, add_policy, status_t,
 	private_kernel_interface_t *this, host_t *src, host_t *dst,
 	traffic_selector_t *src_ts, traffic_selector_t *dst_ts,
 	policy_dir_t direction, policy_type_t type, ipsec_sa_cfg_t *sa,
-	mark_t mark, policy_priority_t priority, uint32_t manual_prio)
+	mark_t mark, policy_priority_t priority, uint32_t manual_prio,
+	char *interface)
 {
 	if (!this->ipsec)
 	{
 		return NOT_SUPPORTED;
 	}
 	return this->ipsec->add_policy(this->ipsec, src, dst, src_ts, dst_ts,
-							direction, type, sa, mark, priority, manual_prio);
+				direction, type, sa, mark, priority, manual_prio, interface);
 }
 
 METHOD(kernel_interface_t, query_policy, status_t,
@@ -511,14 +512,15 @@ METHOD(kernel_interface_t, del_policy, status_t,
 	private_kernel_interface_t *this, host_t *src, host_t *dst,
 	traffic_selector_t *src_ts, traffic_selector_t *dst_ts,
 	policy_dir_t direction, policy_type_t type, ipsec_sa_cfg_t *sa,
-	mark_t mark, policy_priority_t priority, uint32_t manual_prio)
+	mark_t mark, policy_priority_t priority, uint32_t manual_prio,
+	char *interface)
 {
 	if (!this->ipsec)
 	{
 		return NOT_SUPPORTED;
 	}
 	return this->ipsec->del_policy(this->ipsec, src, dst, src_ts, dst_ts,
-						direction, type, sa, mark, priority, manual_prio);
+				direction, type, sa, mark, priority, manual_prio, interface);
 }
 
 METHOD(kernel_interface_t, flush_policies, status_t,

@@ -243,6 +243,20 @@ struct child_cfg_t {
 	uint32_t (*get_manual_prio)(child_cfg_t *this);
 
 	/**
+	 * Set optional network interface restricting IPsec policy
+	 *
+	 * @param interface		network interface
+	 */
+	void (*set_interface)(child_cfg_t *this, char *interface);
+
+	/**
+	 * Get optional network interface restricting IPsec policy
+	 *
+	 * @return				network interface)
+	 */
+	char* (*get_interface)(child_cfg_t *this);
+
+	/**
 	 * Get anti-replay window size
 	 *
 	 * @return				anti-replay window size

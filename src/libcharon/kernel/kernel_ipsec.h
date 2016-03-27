@@ -197,6 +197,7 @@ struct kernel_ipsec_t {
 	 * @param mark			mark for this policy
 	 * @param priority		priority of this policy
 	 * @param manual_prio	manually-set priority (automatic if set to 0)
+	 * @param interface		network interface restricting policy
 	 * @return				SUCCESS if operation completed
 	 */
 	status_t (*add_policy) (kernel_ipsec_t *this,
@@ -205,7 +206,8 @@ struct kernel_ipsec_t {
 							traffic_selector_t *dst_ts,
 							policy_dir_t direction, policy_type_t type,
 							ipsec_sa_cfg_t *sa, mark_t mark,
-							policy_priority_t priority, uint32_t manual_prio);
+							policy_priority_t priority, uint32_t manual_prio,
+							char *interface);
 
 	/**
 	 * Query the use time of a policy.
@@ -240,6 +242,7 @@ struct kernel_ipsec_t {
 	 * @param mark			mark for this policy
 	 * @param priority		priority of the policy
 	 * @param manual_prio	manually-set priority (automatic if set to 0)
+	 * @param interface		network interface restricting policy
 	 * @return				SUCCESS if operation completed
 	 */
 	status_t (*del_policy) (kernel_ipsec_t *this,
@@ -248,7 +251,8 @@ struct kernel_ipsec_t {
 							traffic_selector_t *dst_ts,
 							policy_dir_t direction, policy_type_t type,
 							ipsec_sa_cfg_t *sa, mark_t mark,
-							policy_priority_t priority, uint32_t manual_prio);
+							policy_priority_t priority, uint32_t manual_prio,
+							char *interface);
 
 	/**
 	 * Flush all policies from the SPD.
